@@ -624,95 +624,100 @@ class EthJsonRpc(object):
 
     def shh_version(self):
         '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_version
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
 
         N/A
         '''
         return self._call('shh_version')
 
-    def shh_post(self, topics, payload, priority, ttl, from_=None, to=None):
+    def shh_post(self, type, ttl, topic, powTarget, powTime, payload, key, sig=None):
         '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_post
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
 
         NEEDS TESTING
         '''
         whisper_object = {
-            'from':     from_,
-            'to':       to,
-            'topics':   topics,
-            'payload':  payload,
-            'priority': hex(priority),
-            'ttl':      hex(ttl),
+            'type':      type,
+            'ttl':       ttl,
+            'topic':     topic,
+            'powTarget': powTarget,
+            'powTime':   powTime,
+            'payload':   payload,
+            'key':       key,
+            'sig':       sig,
         }
         return self._call('shh_post', [whisper_object])
-
-    def shh_newIdentity(self):
+     
+    def shh_generateSymmetricKey(self):
         '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_newidentity
-
-        N/A
-        '''
-        return self._call('shh_newIdentity')
-
-    def shh_hasIdentity(self, address):
-        '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_hasidentity
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
 
         NEEDS TESTING
         '''
-        return self._call('shh_hasIdentity', [address])
-
-    def shh_newGroup(self):
+        return self._call('shh_generateSymmetricKey');
+        
+    def shh_subscribe(self, type, key, sig, minPow, topics):
         '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_newgroup
-
-        N/A
-        '''
-        return self._call('shh_newGroup')
-
-    def shh_addToGroup(self):
-        '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_addtogroup
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
 
         NEEDS TESTING
         '''
-        return self._call('shh_addToGroup')
-
-    def shh_newFilter(self, to, topics):
-        '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_newfilter
-
-        NEEDS TESTING
-        '''
-        _filter = {
-            'to':     to,
-            'topics': topics,
+        whisper_object = {
+            'type':   type,
+            'key':    key,
+            'sig':    sig,
+            'pow':    minPow,
+            'topics': topics
         }
-        return self._call('shh_newFilter', [_filter])
-
-    def shh_uninstallFilter(self, filter_id):
+        return self._call('shh_subscribe', [whisper_object])
+    
+    def shh_addSymmetricKeyFromPassword(self, password):
         '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_uninstallfilter
-
-        NEEDS TESTING
-        '''
-        return self._call('shh_uninstallFilter', [filter_id])
-
-    def shh_getFilterChanges(self, filter_id):
-        '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_getfilterchanges
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
 
         NEEDS TESTING
         '''
-        return self._call('shh_getFilterChanges', [filter_id])
-
-    def shh_getMessages(self, filter_id):
+        return self._call('shh_addSymmetricKeyFromPassword', [password])
+    
+    def shh_newKeyPair(self):
         '''
-        https://github.com/ethereum/wiki/wiki/JSON-RPC#shh_getmessages
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
 
         NEEDS TESTING
         '''
-        return self._call('shh_getMessages', [filter_id])
+        return self._call('shh_newKeyPair')
+        
+    def shh_getPublicKey(self, asymmetric_key_address):
+        '''
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
+
+        NEEDS TESTING
+        '''
+        return self._call('shh_getPublicKey', [asymmetric_key_address])
+        
+    def shh_getPrivateKey(self, asymmetric_key_address):
+        '''
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
+
+        NEEDS TESTING
+        '''
+        return self._call('shh_getPrivateKey', [asymmetric_key_address])
+        
+    def shh_getSymmetricKey(self, symmetric_key_address):
+        '''
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
+
+        NEEDS TESTING
+        '''
+        return self._call('shh_getSymmetricKey', [symmetric_key_address])
+        
+    def shh_getNewSubscriptionMessages(self, filterId):
+        '''
+        https://github.com/ethereum/go-ethereum/wiki/Whisper-Usage
+
+        NEEDS TESTING
+        '''
+        return self._call('shh_getNewSubscriptionMessages', [filterId])
 
     def personal_ecRecover(self, message, signature):
         '''
