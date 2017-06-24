@@ -1,5 +1,6 @@
 import json
 import warnings
+import re
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -735,9 +736,34 @@ class EthJsonRpc(object):
         '''
         return self._call('personal_unlockAccount', [address, password])
 
+    def isAddress(self, address):
+        '''
+        https://github.com/ethereum/web3.js/blob/f8aa391351166316c81d7a70dcc95d695c8005db/lib/utils/utils.js#L403
+        '''
+        if not re.match(r'^(0x)?[0-9a-f]{40}$', address):
+            # check if it has the basic requirements of an address
+            return False
+        elif re.match(r'^(0x)?[0-9a-f]{40}$', address) or re.match(r'^(0x)?[0-9A-F]{40}$', address):
+            # If it's all small caps or all all caps, return true
+            return True
+        else:
+            # Otherwise check each case
+            return self.isChecksumAddress(address)
 
+    def isChecksumAddress(self, address):
+        '''
+        https://github.com/ethereum/web3.js/blob/f8aa391351166316c81d7a70dcc95d695c8005db/lib/utils/utils.js#L423
+        '''
+        #Check each case
+        address = address.replace('0x', '')
+        address_hash = utils.sha3(address.toLowerCase())
 
-
+        for i in range(0, 40):
+            hash_value = int(address_hash[i], 16)
+            if hash_value > 7 and address[i].upper() != address[i] \
+                or hash_value <= 7 and address[i].lower() != address[i]:
+                return False
+        return True
 
 class ParityEthJsonRpc(EthJsonRpc):
     '''
