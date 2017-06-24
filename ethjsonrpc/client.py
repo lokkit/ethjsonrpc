@@ -726,6 +726,17 @@ class EthJsonRpc(object):
         NEEDS TESTING
         '''
         return self._call('personal_ecRecover', [message, signature])
+    
+    def personal_unlockAccount(self, address, password):
+        '''
+        https://github.com/ethereum/go-ethereum/wiki/Management-APIs#personal_unlockAccount
+
+        NEEDS TESTING
+        '''
+        return self._call('personal_unlockAccount', [address, password])
+
+
+
 
 
 class ParityEthJsonRpc(EthJsonRpc):
